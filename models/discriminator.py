@@ -13,7 +13,7 @@ class Discriminator(nn.Module):
         self.restored = False
 
         self.layer = nn.Sequential(
-            nn.Linear(2048, 1),
+            nn.Linear(2048, 2),
             nn.LogSoftmax()
         )
 
