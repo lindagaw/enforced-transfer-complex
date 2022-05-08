@@ -13,6 +13,7 @@ if __name__ == '__main__':
     init_random_seed(params.manual_seed)
 
     image_size = 299
+    batch_size = 32
     # load dataset
     dataroot_amazon = "..//dcgan//datasets//office-31-intact//amazon//images//"
     dataroot_dslr = "..//dcgan//datasets//office-31-intact//dslr//images//"
