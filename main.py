@@ -3,6 +3,7 @@
 import params
 from core import eval_src, eval_tgt, train_src, train_tgt
 from utils import get_data_loader, init_model, init_random_seed
+from model import Discriminator
 
 import torch
 import torchvision.models as models
@@ -61,13 +62,13 @@ if __name__ == '__main__':
     tgt_data_loader_eval = dataloader_test_dslr
 
     # load models
-    critic = models.inception_v3(aux_logits=False, pretrained=True)
-    critic.fc = nn.Linear(2048, 1)
+    inception = models.inception_v3(aux_logits=False, pretrained=True)
+    critic = Discriminator()
 
-    src_encoder = torch.nn.Sequential(*(list(critic.children())[:-1]))
+    src_encoder = torch.nn.Sequential(*(list(inception.children())[:-1]))
     src_classifier = nn.Linear(2048, 31)
 
-    tgt_encoder = torch.nn.Sequential(*(list(critic.children())[:-1]))
+    tgt_encoder = torch.nn.Sequential(*(list(inception.children())[:-1]))
     tgt_classifier = nn.Linear(2048, 31)
 
     critic.cuda()
