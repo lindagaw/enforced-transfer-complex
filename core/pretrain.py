@@ -37,8 +37,6 @@ def train_src(encoder, classifier, data_loader):
             # zero gradients for optimizer
             optimizer.zero_grad()
 
-            print(images.shape)
-
             # compute loss for critic
             encoded = encoder(images)
 

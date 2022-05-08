@@ -61,6 +61,8 @@ if __name__ == '__main__':
     tgt_data_loader_eval = dataloader_test_dslr
 
     # load models
+    inception = models.inception_v3(pretrained=True)
+
     critic = models.inception_v3(pretrained=True)
     critic.fc = nn.Linear(2048, 1)
 
@@ -76,7 +78,7 @@ if __name__ == '__main__':
     src_classifier.cuda()
     tgt_classifier.cuda()
 
-    src_encoder, src_classifier = train_src(src_encoder, src_classifier, src_data_loader)
+    src_encoder, src_classifier = train_src(inception, src_classifier, src_data_loader)
 
     # eval source model
     print("=== Evaluating classifier for source domain ===")
