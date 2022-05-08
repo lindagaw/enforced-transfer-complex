@@ -51,8 +51,8 @@ def train_tgt(src_encoder, tgt_encoder, critic,
             optimizer_critic.zero_grad()
 
             # extract and concat features
-            feat_src = src_encoder(images_src)
-            feat_tgt = tgt_encoder(images_tgt)
+            feat_src = src_encoder(images_src).squeeze_()
+            feat_tgt = tgt_encoder(images_tgt).squeeze_()
             feat_concat = torch.cat((feat_src, feat_tgt), 0)
 
             # predict on discriminator
@@ -107,25 +107,8 @@ def train_tgt(src_encoder, tgt_encoder, critic,
                               params.num_epochs,
                               step + 1,
                               len_data_loader,
-                              loss_critic.data[0],
-                              loss_tgt.data[0],
-                              acc.data[0]))
+                              loss_critic.item(),
+                              loss_tgt.item(),
+                              acc.item()))
 
-        #############################
-        # 2.4 save model parameters #
-        #############################
-        if ((epoch + 1) % params.save_step == 0):
-            torch.save(critic.state_dict(), os.path.join(
-                params.model_root,
-                "ADDA-critic-{}.pt".format(epoch + 1)))
-            torch.save(tgt_encoder.state_dict(), os.path.join(
-                params.model_root,
-                "ADDA-target-encoder-{}.pt".format(epoch + 1)))
-
-    torch.save(critic.state_dict(), os.path.join(
-        params.model_root,
-        "ADDA-critic-final.pt"))
-    torch.save(tgt_encoder.state_dict(), os.path.join(
-        params.model_root,
-        "ADDA-target-encoder-final.pt"))
-    return tgt_encoder
+    return critic, tgt_encoder

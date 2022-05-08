@@ -83,7 +83,7 @@ if __name__ == '__main__':
     eval_src(src_encoder, src_classifier, src_data_loader_eval)
 
     # train target encoder by GAN
-    tgt_encoder = train_tgt(src_encoder, tgt_encoder, critic, src_data_loader, tgt_data_loader)
+    critic, tgt_encoder = train_tgt(src_encoder, tgt_encoder, critic, src_data_loader, tgt_data_loader)
     tgt_encoder, tgt_classifier = train_src(src_encoder, src_classifier, src_data_loader)
 
     # eval target encoder on test set of target dataset
