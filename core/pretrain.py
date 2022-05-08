@@ -77,7 +77,7 @@ def eval_src(encoder, classifier, data_loader):
         images = make_variable(images, volatile=True)
         labels = make_variable(labels)
 
-        preds = classifier(encoder(images))
+        preds = classifier(encoder(images).squeeze_())
         loss += criterion(preds, labels).item()
 
         pred_cls = preds.data.max(1)[1]
