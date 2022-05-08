@@ -9,6 +9,8 @@ import torchvision.models as models
 import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 import torch.nn as nn
+
+import pretty_errors
 if __name__ == '__main__':
     # init random seed
     init_random_seed(params.manual_seed)

@@ -31,14 +31,16 @@ def train_src(encoder, classifier, data_loader):
     for epoch in range(params.num_epochs_pre):
         for step, (images, labels) in enumerate(data_loader):
             # make images and labels variable
-            images = make_variable(images)
+            images = make_variable(images.squeeze_())
             labels = make_variable(labels.squeeze_())
 
             # zero gradients for optimizer
             optimizer.zero_grad()
 
             # compute loss for critic
-            preds = classifier(encoder(images))
+            encoded = encoder(images).squeeze_()
+            print(encoded.shape)
+            preds = classifier(encoded).squeeze_()
             loss = criterion(preds, labels)
 
             # optimize source classifier
@@ -54,19 +56,6 @@ def train_src(encoder, classifier, data_loader):
                               len(data_loader),
                               loss.data[0]))
 
-        # eval model on test set
-        if ((epoch + 1) % params.eval_step_pre == 0):
-            eval_src(encoder, classifier, data_loader)
-
-        # save model parameters
-        if ((epoch + 1) % params.save_step_pre == 0):
-            save_model(encoder, "ADDA-source-encoder-{}.pt".format(epoch + 1))
-            save_model(
-                classifier, "ADDA-source-classifier-{}.pt".format(epoch + 1))
-
-    # # save final model
-    save_model(encoder, "ADDA-source-encoder-final.pt")
-    save_model(classifier, "ADDA-source-classifier-final.pt")
 
     return encoder, classifier
 
