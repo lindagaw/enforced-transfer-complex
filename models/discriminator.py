@@ -6,7 +6,7 @@ from torch import nn
 class Discriminator(nn.Module):
     """Discriminator model for source domain."""
 
-    def __init__(self, input_dims, hidden_dims, output_dims):
+    def __init__(self):
         """Init discriminator."""
         super(Discriminator, self).__init__()
 
