@@ -58,7 +58,7 @@ if __name__ == '__main__':
     tgt_data_loader_eval = dataloader_test_dslr
 
     # load models
-    critic = models.inception_v3(pretrain=True)
+    critic = models.inception_v3(pretrained=True)
     critic.fc = nn.Linear(2048, 1)
 
     src_encoder = torch.nn.Sequential(*(list(critic.children())[:-1]))
