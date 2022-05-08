@@ -24,7 +24,7 @@ def eval_tgt(encoder, classifier, data_loader):
         images = make_variable(images, volatile=True)
         labels = make_variable(labels).squeeze_()
 
-        preds = classifier(encoder(images))
+        preds = classifier(encoder(images).squeeze_())
         loss += criterion(preds, labels).item()
 
         pred_cls = preds.data.max(1)[1]
