@@ -31,16 +31,18 @@ def train_src(encoder, classifier, data_loader):
     for epoch in range(params.num_epochs_pre):
         for step, (images, labels) in enumerate(data_loader):
             # make images and labels variable
-            images = make_variable(images.squeeze_())
+            images = make_variable(images)
             labels = make_variable(labels.squeeze_())
 
             # zero gradients for optimizer
             optimizer.zero_grad()
 
+            print(images.shape)
+
             # compute loss for critic
-            encoded = encoder(images).squeeze_()
-            print(encoded.shape)
-            preds = classifier(encoded).squeeze_()
+            encoded = encoder(images)
+
+            preds = classifier(encoded)
             loss = criterion(preds, labels)
 
             # optimize source classifier
