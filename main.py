@@ -61,9 +61,7 @@ if __name__ == '__main__':
     tgt_data_loader_eval = dataloader_test_dslr
 
     # load models
-    inception = models.inception_v3(pretrained=True)
-
-    critic = models.inception_v3(pretrained=True)
+    critic = models.inception_v3(aux_logits=False, pretrained=True)
     critic.fc = nn.Linear(2048, 1)
 
     src_encoder = torch.nn.Sequential(*(list(critic.children())[:-1]))
@@ -72,7 +70,6 @@ if __name__ == '__main__':
     tgt_encoder = torch.nn.Sequential(*(list(critic.children())[:-1]))
     tgt_classifier = nn.Linear(2048, 31)
 
-    inception.cuda()
     critic.cuda()
     src_encoder.cuda()
     tgt_encoder.cuda()
