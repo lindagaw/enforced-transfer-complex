@@ -40,7 +40,7 @@ if __name__ == '__main__':
 
     dataloader_train_amazon = torch.utils.data.DataLoader(train_set_amazon, batch_size=batch_size, shuffle=True)
     dataloader_train_dslr = torch.utils.data.DataLoader(train_set_dslr, batch_size=batch_size, shuffle=True)
-    dataloader_train_webcam = torch.utils.data.DataLoader(rain_set_webcam, batch_size=batch_size, shuffle=True)
+    dataloader_train_webcam = torch.utils.data.DataLoader(train_set_webcam, batch_size=batch_size, shuffle=True)
 
 
     #dataloader_train_amazon = torch.utils.data.DataLoader(train_set_amazon, batch_size=batch_size, shuffle=True)
