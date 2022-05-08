@@ -68,6 +68,11 @@ if __name__ == '__main__':
     tgt_encoder = torch.nn.Sequential(*(list(critic.children())[:-1]))
     tgt_classifier = nn.Linear(2048, 31)
 
+    critic.cuda()
+    src_encoder.cuda()
+    tgt_encoder.cuda()
+    src_classifier.cuda()
+    tgt_classifier.cuda()
 
     src_encoder, src_classifier = train_src(src_encoder, src_classifier, src_data_loader)
 
