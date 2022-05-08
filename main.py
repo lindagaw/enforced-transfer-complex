@@ -62,6 +62,9 @@ if __name__ == '__main__':
 
     # load models
     critic = models.inception_v3(aux_logits=False, pretrained=True)
+
+    print(critic)
+
     critic.fc = nn.Linear(2048, 1)
 
     src_encoder = torch.nn.Sequential(*(list(critic.children())[:-1]))
