@@ -2,66 +2,81 @@
 
 import params
 from core import eval_src, eval_tgt, train_src, train_tgt
-from models import Discriminator, LeNetClassifier, LeNetEncoder
 from utils import get_data_loader, init_model, init_random_seed
+
+import torchvision.models as models
 
 if __name__ == '__main__':
     # init random seed
     init_random_seed(params.manual_seed)
 
     # load dataset
-    src_data_loader = get_data_loader(params.src_dataset)
-    src_data_loader_eval = get_data_loader(params.src_dataset, train=False)
-    tgt_data_loader = get_data_loader(params.tgt_dataset)
-    tgt_data_loader_eval = get_data_loader(params.tgt_dataset, train=False)
+    dataroot_amazon = "..//dcgan//datasets//office-31-intact//amazon//images//"
+    dataroot_dslr = "..//dcgan//datasets//office-31-intact//dslr//images//"
+    dataroot_webcam = "..//dcgan//datasets//office-31-intact//webcam//images//"
+
+    transform=transforms.Compose([
+        transforms.Resize(image_size),
+        transforms.CenterCrop(image_size),
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+        #AddGaussianNoise(0., 1.)
+    ])
+
+    dataset_amazon = datasets.ImageFolder(root=dataroot_amazon,
+                               transform=transform)
+    dataset_dslr = datasets.ImageFolder(root=dataroot_dslr,
+                               transform=transform)
+    dataset_webcam = datasets.ImageFolder(root=dataroot_webcam,
+                               transform=transform)
+
+    train_set_amazon, test_set_amazon = torch.utils.data.random_split(dataset_amazon, [int(len(dataset_amazon)*0.8), len(dataset_amazon)-int(len(dataset_amazon)*0.8)])
+    train_set_dslr, test_set_dslr = torch.utils.data.random_split(dataset_dslr, [int(len(dataset_dslr)*0.8), len(dataset_dslr)-int(len(dataset_dslr)*0.8)])
+    train_set_webcam, test_set_webcam = torch.utils.data.random_split(dataset_webcam, [int(len(dataset_webcam)*0.8), len(dataset_webcam)-int(len(dataset_webcam)*0.8)])
+
+    dataloader_train_amazon = torch.utils.data.DataLoader(train_set_amazon, batch_size=batch_size, shuffle=True)
+    dataloader_train_dslr = torch.utils.data.DataLoader(train_set_dslr, batch_size=batch_size, shuffle=True)
+    dataloader_train_webcam = torch.utils.data.DataLoader(rain_set_webcam, batch_size=batch_size, shuffle=True)
+
+
+    #dataloader_train_amazon = torch.utils.data.DataLoader(train_set_amazon, batch_size=batch_size, shuffle=True)
+    dataloader_test_amazon = torch.utils.data.DataLoader(test_set_amazon, batch_size=batch_size, shuffle=True)
+    #dataloader_train_dslr = torch.utils.data.DataLoader(train_set_dslr, batch_size=batch_size, shuffle=True)
+    dataloader_test_dslr = torch.utils.data.DataLoader(test_set_dslr, batch_size=batch_size, shuffle=True)
+    #dataloader_train_webcam = torch.utils.data.DataLoader(train_set_webcam, batch_size=batch_size, shuffle=True)
+    dataloader_test_webcam = torch.utils.data.DataLoader(test_set_webcam, batch_size=batch_size, shuffle=True)
+
+    # amazon to dslr
+    src_data_loader = dataloader_train_amazon
+    tgt_data_loader = dataloader_train_dslr
+
+    src_data_loader_eval = dataloader_test_amazon
+    tgt_data_loader_eval = dataloader_test_dslr
 
     # load models
-    src_encoder = init_model(net=LeNetEncoder(),
-                             restore=params.src_encoder_restore)
-    src_classifier = init_model(net=LeNetClassifier(),
-                                restore=params.src_classifier_restore)
-    tgt_encoder = init_model(net=LeNetEncoder(),
-                             restore=params.tgt_encoder_restore)
-    critic = init_model(Discriminator(input_dims=params.d_input_dims,
-                                      hidden_dims=params.d_hidden_dims,
-                                      output_dims=params.d_output_dims),
-                        restore=params.d_model_restore)
+    critic = models.inception_v3(pretrain=True)
+    critic.fc = nn.Linear(2048, 1)
 
-    # train source model
-    print("=== Training classifier for source domain ===")
-    print(">>> Source Encoder <<<")
-    print(src_encoder)
-    print(">>> Source Classifier <<<")
-    print(src_classifier)
+    src_encoder = torch.nn.Sequential(*(list(critic.children())[:-1]))
+    src_classifier = nn.Linear(2048, 31)
 
-    if not (src_encoder.restored and src_classifier.restored and
-            params.src_model_trained):
-        src_encoder, src_classifier = train_src(
-            src_encoder, src_classifier, src_data_loader)
+    tgt_encoder = torch.nn.Sequential(*(list(critic.children())[:-1]))
+    tgt_classifier = nn.Linear(2048, 31)
+
+
+    src_encoder, src_classifier = train_src(src_encoder, src_classifier, src_data_loader)
 
     # eval source model
     print("=== Evaluating classifier for source domain ===")
     eval_src(src_encoder, src_classifier, src_data_loader_eval)
 
     # train target encoder by GAN
-    print("=== Training encoder for target domain ===")
-    print(">>> Target Encoder <<<")
-    print(tgt_encoder)
-    print(">>> Critic <<<")
-    print(critic)
-
-    # init weights of target encoder with those of source encoder
-    if not tgt_encoder.restored:
-        tgt_encoder.load_state_dict(src_encoder.state_dict())
-
-    if not (tgt_encoder.restored and critic.restored and
-            params.tgt_model_trained):
-        tgt_encoder = train_tgt(src_encoder, tgt_encoder, critic,
-                                src_data_loader, tgt_data_loader)
+    tgt_encoder = train_tgt(src_encoder, tgt_encoder, critic, src_data_loader, tgt_data_loader)
+    tgt_encoder, tgt_classifier = train_src(src_encoder, src_classifier, src_data_loader)
 
     # eval target encoder on test set of target dataset
     print("=== Evaluating classifier for encoded target domain ===")
     print(">>> source only <<<")
     eval_tgt(src_encoder, src_classifier, tgt_data_loader_eval)
     print(">>> domain adaption <<<")
-    eval_tgt(tgt_encoder, src_classifier, tgt_data_loader_eval)
+    eval_tgt(tgt_encoder, tgt_classifier, tgt_data_loader_eval)
