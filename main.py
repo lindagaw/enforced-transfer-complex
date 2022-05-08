@@ -4,6 +4,7 @@ import params
 from core import eval_src, eval_tgt, train_src, train_tgt
 from utils import get_data_loader, init_model, init_random_seed
 
+import torch
 import torchvision.models as models
 import torchvision.transforms as transforms
 import torchvision.datasets as datasets
