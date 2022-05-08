@@ -6,6 +6,7 @@ from utils import get_data_loader, init_model, init_random_seed
 
 import torchvision.models as models
 import torchvision.transforms as transforms
+import torchvision.datasets as datasets
 if __name__ == '__main__':
     # init random seed
     init_random_seed(params.manual_seed)
