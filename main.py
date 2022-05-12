@@ -118,11 +118,11 @@ if __name__ == '__main__':
                                     tgt_empirical_mean, tgt_empirical_covar, tgt_encoder, image)
 
             if is_ind_with_src:
-                predicted = src_classifier(src_encoder(torch.unsqueeze(image, 0))).squeeze_()
+                predicted = src_classifier(src_encoder(make_variable(torch.unsqueeze(image, 0)))).squeeze_()
                 y_pred.append(predicted)
                 y_true.append(label.squeeze_().cpu())
             elif is_ind_with_tgt:
-                predicted = tgt_classifier(tgt_encoder(torch.unsqueeze(image, 0))).squeeze_()
+                predicted = tgt_classifier(tgt_encoder(make_variable(torch.unsqueeze(image, 0)))).squeeze_()
                 y_pred.append(predicted)
                 y_true.append(label.squeeze_().cpu())
 
