@@ -11,8 +11,11 @@ def train_tgt_classifier(encoder, classifier, data_loader):
     # 1. setup network #
     ####################
 
+    # freeze the layers in the (tgt) encoder
+    for param in encoder.parameters():
+        param.requires_grad = False
+
     # set train state for Dropout and BN layers
-    encoder.eval()
     classifier.train()
 
     # setup criterion and optimizer
