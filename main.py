@@ -4,7 +4,7 @@ import params
 from core import eval_src, eval_tgt, train_src, train_tgt_classifier, train_tgt_encoder_and_critic
 from core import get_empirical_mean, get_empirical_covar, get_mahalanobis_dist, is_in_distribution
 
-from utils import get_data_loader, init_model, init_random_seed
+from utils import get_data_loader, init_model, init_random_seed, make_variable
 from models import Discriminator
 
 import torch
