@@ -2,6 +2,8 @@
 
 import params
 from core import eval_src, eval_tgt, train_src, train_tgt_classifier, train_tgt_encoder_and_critic
+from core import get_empirical_mean, get_empirical_covar, get_mahalanobis_dist, is_in_distribution
+
 from utils import get_data_loader, init_model, init_random_seed
 from models import Discriminator
 
@@ -89,8 +91,15 @@ if __name__ == '__main__':
     tgt_encoder, tgt_classifier = train_tgt_classifier(tgt_encoder, tgt_classifier, tgt_data_loader)
 
     # eval target encoder on test set of target dataset
-    print("=== Evaluating classifier for encoded target domain ===")
-    print(">>> source on source <<<")
-    eval_src(src_encoder, src_classifier, src_data_loader_eval)
-    print(">>> domain adaption <<<")
+    print(">>> domain adaption without OOD <<<")
     eval_tgt(tgt_encoder, tgt_classifier, tgt_data_loader_eval)
+
+    print(">>> domain adaptation with OOD <<<")
+
+    src_empirical_mean = get_empirical_mean(src_encoder, tgt_encoder, critic, src_data_loader)
+    tgt_empirical_mean = get_empirical_mean(src_encoder, tgt_encoder, critic, tgt_data_loader)
+    src_empirical_covar = get_empirical_covar(src_encoder, tgt_encoder, critic, src_data_loader)
+    tgt_empirical_covar = get_empirical_covar(src_encoder, tgt_encoder, critic, tgt_data_loader)
+
+    src_avg_mahalanobis, src_std_mahalanobis = get_mahalanobis_dist(src_encoder, tgt_encoder, critic, src_data_loader)
+    tgt_avg_mahalanobis, tgt_std_mahalanobis = get_mahalanobis_dist(src_encoder, tgt_encoder, critic, tgt_data_loader)
