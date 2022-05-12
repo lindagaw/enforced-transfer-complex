@@ -117,16 +117,16 @@ if __name__ == '__main__':
                 is_in_distribution(tgt_avg_mahalanobis, tgt_std_mahalanobis, \
                                     tgt_empirical_mean, tgt_empirical_covar, tgt_encoder, image)
 
-            if is_ind_with_src:
-                image = make_variable(torch.unsqueeze(image, 0))
-                encoded = src_encoder(image).squeeze_()
-                predicted = src_classifier(encoded).squeeze_().cpu()
-                y_pred.append(torch.argmax(predicted).item())
-                y_true.append(label.squeeze_().cpu())
-            elif is_ind_with_tgt:
+            if is_ind_with_tgt:
                 image = make_variable(torch.unsqueeze(image, 0))
                 encoded = tgt_encoder(image).squeeze_()
                 predicted = tgt_classifier(encoded).squeeze_().cpu()
+                y_pred.append(torch.argmax(predicted).item())
+                y_true.append(label.squeeze_().cpu())
+            elif is_ind_with_src:
+                image = make_variable(torch.unsqueeze(image, 0))
+                encoded = src_encoder(image).squeeze_()
+                predicted = src_classifier(encoded).squeeze_().cpu()
                 y_pred.append(torch.argmax(predicted).item())
                 y_true.append(label.squeeze_().cpu())
 
