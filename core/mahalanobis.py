@@ -15,11 +15,8 @@ def get_empirical_mean(src_encoder, tgt_encoder, critic, data_loader):
     feat_concat_norms = []
 
     for step, (images, labels) in enumerate(data_loader):
-
-        images.cuda()
-
-        feat_srcs = src_encoder(images).squeeze_()
-        feat_tgts = tgt_encoder(images).squeeze_()
+        feat_srcs = src_encoder(make_variable(images)).squeeze_()
+        feat_tgts = tgt_encoder(make_variable(images)).squeeze_()
 
         for feat_src, feat_tgt in zip(feat_srcs, feat_tgts):
             feat_concat = torch.cat((feat_src, feat_tgt), 0)
@@ -35,8 +32,8 @@ def get_empirical_covar(src_encoder, tgt_encoder, critic, data_loader):
     for step, (images, labels) in enumerate(data_loader):
         images.cuda()
 
-        feat_srcs = src_encoder(images).squeeze_()
-        feat_tgts = tgt_encoder(images).squeeze_()
+        feat_srcs = src_encoder(make_variable(images)).squeeze_()
+        feat_tgts = tgt_encoder(make_variable(images)).squeeze_()
 
         for feat_src, feat_tgt in zip(feat_srcs, feat_tgts):
             feat_concat = torch.cat((feat_src, feat_tgt), 0)
@@ -57,8 +54,8 @@ def get_mahalanobis_dist(src_encoder, tgt_encoder, critic, data_loader):
     for step, (images, labels) in enumerate(data_loader):
         images.cuda()
 
-        feat_srcs = src_encoder(images).squeeze_()
-        feat_tgts = tgt_encoder(images).squeeze_()
+        feat_srcs = src_encoder(make_variable(images)).squeeze_()
+        feat_tgts = tgt_encoder(make_variable(images)).squeeze_()
 
         for feat_src, feat_tgt in zip(feat_srcs, feat_tgts):
             feat_concat = torch.cat((feat_src, feat_tgt), 0)
