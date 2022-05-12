@@ -10,8 +10,7 @@ import params
 from utils import make_variable
 
 
-def train_tgt(src_encoder, tgt_encoder, critic,
-              src_data_loader, tgt_data_loader):
+def train_tgt_encoder_and_critic(src_encoder, tgt_encoder, critic, src_data_loader, tgt_data_loader):
     """Train encoder for target domain."""
     ####################
     # 1. setup network #
