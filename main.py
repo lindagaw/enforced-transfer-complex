@@ -86,7 +86,7 @@ if __name__ == '__main__':
     # train target encoder by GAN
     critic, tgt_encoder = train_tgt_encoder_and_critic(src_encoder, tgt_encoder, critic, src_data_loader, tgt_data_loader)
 
-    _, tgt_classifier = train_tgt_classifier(tgt_encoder, tgt_classifier, tgt_data_loader)
+    tgt_encoder, tgt_classifier = train_tgt_classifier(tgt_encoder, tgt_classifier, tgt_data_loader)
 
     # eval target encoder on test set of target dataset
     print("=== Evaluating classifier for encoded target domain ===")

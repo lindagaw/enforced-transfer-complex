@@ -11,11 +11,8 @@ def train_tgt_classifier(encoder, classifier, data_loader):
     # 1. setup network #
     ####################
 
-    # freeze the layers in the (tgt) encoder
-    for param in encoder.parameters():
-        param.requires_grad = False
-
     # set train state for Dropout and BN layers
+    encoder.train()
     classifier.train()
 
     # setup criterion and optimizer
@@ -49,7 +46,7 @@ def train_tgt_classifier(encoder, classifier, data_loader):
             optimizer.step()
 
             # print step info
-            if ((step + 1) % params.log_step_pre == 0):
+            if ((step + 1) % 10 == 0):
                 print("Epoch [{}/{}] Step [{}/{}]: loss={}"
                       .format(epoch + 1,
                               params.num_epochs_pre,
