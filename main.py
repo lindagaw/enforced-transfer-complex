@@ -14,6 +14,7 @@ import torchvision.datasets as datasets
 import torch.nn as nn
 
 import pretty_errors
+from sklearn.metrics import accuracy_score
 if __name__ == '__main__':
     # init random seed
     init_random_seed(params.manual_seed)
@@ -103,3 +104,25 @@ if __name__ == '__main__':
 
     src_avg_mahalanobis, src_std_mahalanobis = get_mahalanobis_dist(src_encoder, tgt_encoder, critic, src_data_loader)
     tgt_avg_mahalanobis, tgt_std_mahalanobis = get_mahalanobis_dist(src_encoder, tgt_encoder, critic, tgt_data_loader)
+
+    y_pred = []
+    y_true = []
+
+    for step, (images, labels) in enumerate(tgt_data_loader_eval):
+        for image, label in zip(images, labels):
+            is_ind_with_src = \
+                is_in_distribution(src_avg_mahalanobis, src_std_mahalanobis, src_empirical_mean, src_empirical_covar, image)
+            is_ind_with_tgt = \
+                is_in_distribution(tgt_avg_mahalanobis, tgt_std_mahalanobis, tgt_empirical_mean, tgt_empirical_covar, image)
+
+            if is_ind_with_src:
+                predicted = src_classifier(src_encoder(torch.unsqueeze(image, 0))).squeeze_()
+                y_pred.append(predicted)
+                y_true.append(label.squeeze_())
+            elif is_ind_with_tgt:
+                predicted = tgt_classifier(tgt_encoder(torch.unsqueeze(image, 0))).squeeze_()
+                y_pred.append(predicted)
+                y_true.append(label.squeeze_())
+
+    acc = accuracy_score(y_true=y_true, y_pred=y_pred)
+    print(acc)
