@@ -120,11 +120,11 @@ if __name__ == '__main__':
             if is_ind_with_src:
                 predicted = src_classifier(src_encoder(torch.unsqueeze(image, 0))).squeeze_()
                 y_pred.append(predicted)
-                y_true.append(label.squeeze_())
+                y_true.append(label.squeeze_().cpu())
             elif is_ind_with_tgt:
                 predicted = tgt_classifier(tgt_encoder(torch.unsqueeze(image, 0))).squeeze_()
                 y_pred.append(predicted)
-                y_true.append(label.squeeze_())
+                y_true.append(label.squeeze_().cpu())
 
     acc = accuracy_score(y_true=y_true, y_pred=y_pred)
     print(acc)
