@@ -68,7 +68,7 @@ def get_mahalanobis_dist(src_encoder, tgt_encoder, critic, data_loader):
     return avg_mahalanobis, std_mahalanobis
 
 def is_in_distribution(avg_mahalanobis, std_mahalanobis, empirical_mean, empirical_covar, encoder, image):
-    difference = np.linalg.norm(encoder(make_variable(torch.unsqueeze(image, 0))).squeeze_().cpu()) - empirical_mean
+    difference = np.linalg.norm(encoder(make_variable(image)).squeeze_().cpu()) - empirical_mean
     mahalanobis = difference * empirical_covar * difference
 
     if avg_mahalanobis - std_mahalanobis < mahalanobis and mahalanobis < avg_mahalanobis + std_mahalanobis:
