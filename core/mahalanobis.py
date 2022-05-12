@@ -16,6 +16,8 @@ def get_empirical_mean(src_encoder, tgt_encoder, critic, data_loader):
 
     for step, (images, labels) in enumerate(data_loader):
 
+        images.cuda()
+
         feat_srcs = src_encoder(images).squeeze_()
         feat_tgts = tgt_encoder(images).squeeze_()
 
@@ -31,7 +33,7 @@ def get_empirical_covar(src_encoder, tgt_encoder, critic, data_loader):
     emprical_mean = get_empirical_mean(src_encoder, tgt_encoder, critic, data_loader)
     vals = []
     for step, (images, labels) in enumerate(data_loader):
-
+        images.cuda()
 
         feat_srcs = src_encoder(images).squeeze_()
         feat_tgts = tgt_encoder(images).squeeze_()
@@ -53,7 +55,7 @@ def get_mahalanobis_dist(src_encoder, tgt_encoder, critic, data_loader):
     mahalanobis_dists = []
 
     for step, (images, labels) in enumerate(data_loader):
-
+        images.cuda()
 
         feat_srcs = src_encoder(images).squeeze_()
         feat_tgts = tgt_encoder(images).squeeze_()
