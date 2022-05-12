@@ -20,7 +20,7 @@ def get_empirical_mean(src_encoder, tgt_encoder, critic, data_loader):
 
         for feat_src, feat_tgt in zip(feat_srcs, feat_tgts):
             feat_concat = torch.cat((feat_src, feat_tgt), 0)
-            feat_concat_norm = np.linalg.norm(feat_concat)
+            feat_concat_norm = np.linalg.norm(feat_concat.cpu())
             feat_concat_norms.append(feat_concat_norm)
 
     return np.average(feat_concat_norms)
@@ -30,14 +30,13 @@ def get_empirical_covar(src_encoder, tgt_encoder, critic, data_loader):
     emprical_mean = get_empirical_mean(src_encoder, tgt_encoder, critic, data_loader)
     vals = []
     for step, (images, labels) in enumerate(data_loader):
-        images.cuda()
 
         feat_srcs = src_encoder(make_variable(images)).squeeze_()
         feat_tgts = tgt_encoder(make_variable(images)).squeeze_()
 
         for feat_src, feat_tgt in zip(feat_srcs, feat_tgts):
             feat_concat = torch.cat((feat_src, feat_tgt), 0)
-            feat_concat_norm = np.linalg.norm(feat_concat)
+            feat_concat_norm = np.linalg.norm(feat_concat.cpu())
             difference = feat_concat_norm - emprical_mean
             val = difference * difference
             vals.append(val)
@@ -52,14 +51,13 @@ def get_mahalanobis_dist(src_encoder, tgt_encoder, critic, data_loader):
     mahalanobis_dists = []
 
     for step, (images, labels) in enumerate(data_loader):
-        images.cuda()
 
         feat_srcs = src_encoder(make_variable(images)).squeeze_()
         feat_tgts = tgt_encoder(make_variable(images)).squeeze_()
 
         for feat_src, feat_tgt in zip(feat_srcs, feat_tgts):
             feat_concat = torch.cat((feat_src, feat_tgt), 0)
-            feat_concat_norm = np.linalg.norm(feat_concat)
+            feat_concat_norm = np.linalg.norm(feat_concat.cpu())
             difference = feat_concat_norm - emprical_mean
             val = difference * empirical_covar * difference
             mahalanobis_dists.append(val)
@@ -69,8 +67,8 @@ def get_mahalanobis_dist(src_encoder, tgt_encoder, critic, data_loader):
 
     return avg_mahalanobis, std_mahalanobis
 
-def is_in_distribution(avg_mahalanobis, std_mahalanobis, empirical_mean, empirical_covar, image):
-    difference = np.linalg.norm(image) - empirical_mean
+def is_in_distribution(avg_mahalanobis, std_mahalanobis, empirical_mean, empirical_covar, encoder, image):
+    difference = np.linalg.norm(src_encoder(make_variable(torch.unsqueeze(image, 0))).squeeze_().cpu()) - empirical_mean
     mahalanobis = difference * empirical_covar * difference
 
     if avg_mahalanobis - std_mahalanobis < mahalanobis and mahalanobis < avg_mahalanobis + std_mahalanobis:
