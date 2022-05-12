@@ -59,10 +59,10 @@ if __name__ == '__main__':
 
     # amazon to dslr
     src_data_loader = dataloader_train_amazon
-    tgt_data_loader = dataloader_train_dslr
+    tgt_data_loader = dataloader_train_webcam
 
     src_data_loader_eval = dataloader_test_amazon
-    tgt_data_loader_eval = dataloader_test_dslr
+    tgt_data_loader_eval = dataloader_test_webcam
 
     # load models
     inception = models.inception_v3(aux_logits=False, pretrained=True)
