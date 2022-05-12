@@ -111,9 +111,11 @@ if __name__ == '__main__':
     for step, (images, labels) in enumerate(tgt_data_loader_eval):
         for image, label in zip(images, labels):
             is_ind_with_src = \
-                is_in_distribution(src_avg_mahalanobis, src_std_mahalanobis, src_empirical_mean, src_empirical_covar, image)
+                is_in_distribution(src_avg_mahalanobis, src_std_mahalanobis, \
+                                    src_empirical_mean, src_empirical_covar, src_encoder, image)
             is_ind_with_tgt = \
-                is_in_distribution(tgt_avg_mahalanobis, tgt_std_mahalanobis, tgt_empirical_mean, tgt_empirical_covar, image)
+                is_in_distribution(tgt_avg_mahalanobis, tgt_std_mahalanobis, \
+                                    tgt_empirical_mean, tgt_empirical_covar, tgt_encoder, image)
 
             if is_ind_with_src:
                 predicted = src_classifier(src_encoder(torch.unsqueeze(image, 0))).squeeze_()
