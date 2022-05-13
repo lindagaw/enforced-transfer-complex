@@ -72,7 +72,7 @@ def is_in_distribution(avg_mahalanobis, std_mahalanobis, empirical_mean, empiric
     difference = np.linalg.norm(encoder(image).squeeze_().cpu()) - empirical_mean
     mahalanobis = difference * empirical_covar * difference
 
-    if avg_mahalanobis - 0.20*std_mahalanobis < mahalanobis and mahalanobis < avg_mahalanobis + 0.20*std_mahalanobis:
+    if avg_mahalanobis - 0.175*std_mahalanobis < mahalanobis and mahalanobis < avg_mahalanobis + 0.175*std_mahalanobis:
         return True
     else:
         return False
