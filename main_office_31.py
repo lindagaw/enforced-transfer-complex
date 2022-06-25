@@ -58,11 +58,11 @@ if __name__ == '__main__':
     dataloader_test_webcam = torch.utils.data.DataLoader(test_set_webcam, batch_size=batch_size, shuffle=True)
 
     # amazon to dslr
-    src_data_loader = dataloader_train_amazon
-    tgt_data_loader = dataloader_train_dslr
+    tgt_data_loader = dataloader_train_amazon
+    src_data_loader = dataloader_train_dslr
 
-    src_data_loader_eval = dataloader_test_amazon
-    tgt_data_loader_eval = dataloader_test_dslr
+    tgt_data_loader_eval = dataloader_test_amazon
+    src_data_loader_eval = dataloader_test_dslr
 
     # load models
     inception = models.inception_v3(aux_logits=False, pretrained=True)
