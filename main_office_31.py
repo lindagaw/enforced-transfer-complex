@@ -59,10 +59,10 @@ if __name__ == '__main__':
 
     # amazon to dslr
     tgt_data_loader = dataloader_train_webcam
-    src_data_loader = dataloader_train_dslr
+    src_data_loader = dataloader_train_amazon
 
     tgt_data_loader_eval = dataloader_test_webcam
-    src_data_loader_eval = dataloader_test_dslr
+    src_data_loader_eval = dataloader_test_amazon
 
     # load models
     inception = models.inception_v3(aux_logits=False, pretrained=True)
@@ -123,7 +123,8 @@ if __name__ == '__main__':
                 predicted = tgt_classifier(encoded).squeeze_().cpu()
                 y_pred.append(torch.argmax(predicted).item())
                 y_true.append(label.squeeze_().cpu())
-            elif is_ind_with_src:
+            #elif is_ind_with_src:
+            else:
                 image = make_variable(torch.unsqueeze(image, 0))
                 encoded = src_encoder(image).squeeze_()
                 predicted = src_classifier(encoded).squeeze_().cpu()
