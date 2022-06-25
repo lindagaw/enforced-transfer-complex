@@ -60,21 +60,21 @@ if __name__ == '__main__':
     dataloader_test_real_world = torch.utils.data.DataLoader(test_set_real_world batch_size=batch_size, shuffle=True)
 
     # art to clipart
-    src_data_loader = dataloader_train_art
-    tgt_data_loader = dataloader_train_product
+    src_data_loader = dataloader_train_product
+    tgt_data_loader = dataloader_train_art
 
-    src_data_loader_eval = dataloader_test_art
-    tgt_data_loader_eval = dataloader_test_product
+    src_data_loader_eval = dataloader_test_product
+    tgt_data_loader_eval = dataloader_test_art
 
     # load models
     inception = models.inception_v3(aux_logits=False, pretrained=True)
     critic = Discriminator()
 
     src_encoder = torch.nn.Sequential(*(list(inception.children())[:-1]))
-    src_classifier = nn.Linear(2048, 31)
+    src_classifier = nn.Linear(2048, 65)
 
     tgt_encoder = torch.nn.Sequential(*(list(inception.children())[:-1]))
-    tgt_classifier = nn.Linear(2048, 31)
+    tgt_classifier = nn.Linear(2048, 65)
 
     critic.cuda()
     src_encoder.cuda()

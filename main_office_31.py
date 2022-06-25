@@ -59,10 +59,10 @@ if __name__ == '__main__':
 
     # amazon to dslr
     tgt_data_loader = dataloader_train_webcam
-    src_data_loader = dataloader_train_amazon
+    src_data_loader = dataloader_train_dslr
 
     tgt_data_loader_eval = dataloader_test_webcam
-    src_data_loader_eval = dataloader_test_amazon
+    src_data_loader_eval = dataloader_test_dslr
 
     # load models
     inception = models.inception_v3(aux_logits=False, pretrained=True)
@@ -117,14 +117,13 @@ if __name__ == '__main__':
                 is_in_distribution(tgt_avg_mahalanobis, tgt_std_mahalanobis, \
                                     tgt_empirical_mean, tgt_empirical_covar, tgt_encoder, image)
 
-            if is_ind_with_src:
+            if is_ind_with_tgt:
                 image = make_variable(torch.unsqueeze(image, 0))
                 encoded = tgt_encoder(image).squeeze_()
                 predicted = tgt_classifier(encoded).squeeze_().cpu()
                 y_pred.append(torch.argmax(predicted).item())
                 y_true.append(label.squeeze_().cpu())
-            #elif is_ind_with_src:
-            else:
+            elif is_ind_with_src:
                 image = make_variable(torch.unsqueeze(image, 0))
                 encoded = src_encoder(image).squeeze_()
                 predicted = src_classifier(encoded).squeeze_().cpu()
