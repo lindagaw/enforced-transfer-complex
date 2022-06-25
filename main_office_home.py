@@ -57,7 +57,7 @@ if __name__ == '__main__':
     dataloader_test_art = torch.utils.data.DataLoader(test_set_art, batch_size=batch_size, shuffle=True)
     dataloader_test_clipart = torch.utils.data.DataLoader(test_set_clipart, batch_size=batch_size, shuffle=True)
     dataloader_test_product = torch.utils.data.DataLoader(test_set_product, batch_size=batch_size, shuffle=True)
-    dataloader_test_real_world = torch.utils.data.DataLoader(test_set_real_world batch_size=batch_size, shuffle=True)
+    dataloader_test_real_world = torch.utils.data.DataLoader(test_set_real_world, batch_size=batch_size, shuffle=True)
 
     # art to clipart
     src_data_loader = dataloader_train_product
