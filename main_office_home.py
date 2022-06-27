@@ -60,11 +60,11 @@ if __name__ == '__main__':
     dataloader_test_real_world = torch.utils.data.DataLoader(test_set_real_world, batch_size=batch_size, shuffle=True)
 
     # art to clipart
+    src_data_loader = dataloader_train_real_world
     tgt_data_loader = dataloader_train_product
-    src_data_loader = dataloader_train_clipart
 
+    src_data_loader_eval = dataloader_test_real_world
     tgt_data_loader_eval = dataloader_test_product
-    src_data_loader_eval = dataloader_test_clipart
 
     # load models
     inception = models.inception_v3(aux_logits=False, pretrained=True)
